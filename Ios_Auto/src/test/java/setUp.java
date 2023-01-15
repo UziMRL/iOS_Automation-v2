@@ -52,7 +52,7 @@ public class setUp {
         driver.setLogLevel(Level.INFO);
         driver.findElement(By.xpath("//*[@text='Yes, I would like to Activate']")).click();
         //enter an incorrect activation code
-        driver.findElement(By.xpath("//*[@class='UIATextField']")).sendKeys("119_429_1191031");
+        driver.findElement(By.xpath("//*[@class='UIATextField']")).sendKeys("119_429_1191008");
         //Activate Asound and wait
         driver.findElement(By.xpath("//*[@text='Activate']")).click();
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);

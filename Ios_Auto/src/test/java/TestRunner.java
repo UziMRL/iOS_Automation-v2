@@ -20,7 +20,7 @@ public class TestRunner {
     public static void main(String[] args) {
         // Run the tests
         Result result = JUnitCore.runClasses(
-                Activation.class
+                Activation.class,
                Permissions.class,
                homePageMute.class,
                History.class,

@@ -21,11 +21,11 @@ public class TestRunner {
         // Run the tests
         Result result = JUnitCore.runClasses(
                 Activation.class
-//                Permissions.class,
-//                homePageMute.class,
-//                History.class,
-//                InformationUI.class,
-//                InformationFunctionality.class
+               Permissions.class,
+               homePageMute.class,
+               History.class,
+               InformationUI.class,
+              InformationFunctionality.class
         );
 
         // Create the report document

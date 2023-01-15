@@ -4,7 +4,6 @@ import io.appium.java_client.ios.IOSElement;
 import io.appium.java_client.remote.MobileCapabilityType;
 import org.openqa.selenium.By;
 
-
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.junit.*;
 import org.openqa.selenium.support.ui.WebDriverWait;

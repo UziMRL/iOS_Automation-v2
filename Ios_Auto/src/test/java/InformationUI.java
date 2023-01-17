@@ -2,6 +2,9 @@ import io.appium.java_client.remote.IOSMobileCapabilityType;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.IOSElement;
 import io.appium.java_client.remote.MobileCapabilityType;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.openqa.selenium.By;
 
 
@@ -18,7 +21,7 @@ import java.util.logging.Level;
 
 import static org.junit.Assert.assertEquals;
 
-
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class InformationUI {
     private String reportDirectory = "reports";
     private String reportFormat = "xml";
@@ -36,26 +39,31 @@ public class InformationUI {
 
     public static final String ANSI_GREEN_Background = "\u001B[42m";
     // Main driver method
-    protected IOSDriver<IOSElement> driver = null;
+    protected static IOSDriver<IOSElement> driver = null;
     WebDriverWait wait;
     HashMap<String,Object>scrollObject = new HashMap<>();
 
-    DesiredCapabilities dc = new DesiredCapabilities();
+    static DesiredCapabilities dc = new DesiredCapabilities();
+    String ActivationCode = "119_429_1191031";
 
-    @Before
-    public void setUp() throws MalformedURLException {
+    @BeforeClass
+    public static void setUp() throws MalformedURLException {
         dc.setCapability("reportDirectory", "/Users/qa/Desktop/Reports");
         dc.setCapability("reportFormat", "pdf");
         dc.setCapability("testName", "Information UI");
         dc.setCapability(MobileCapabilityType.UDID, "auto");
-        dc.setCapability("fullReset", true);
+        dc.setCapability("noReset", true);
         dc.setCapability(MobileCapabilityType.APP, "/Users/qa/Desktop/AsoundStag (06).ipa");
         dc.setCapability(IOSMobileCapabilityType.BUNDLE_ID, "com.mrl.Asound.stag");
         driver = new IOSDriver<>(new URL("http://localhost:4723/wd/hub"), dc);
         driver.setLogLevel(Level.INFO);
+    }
+    @Test
+    @Order(1)
+    public void Information_AActivate(){
         driver.findElement(By.xpath("//*[@text='Yes, I would like to Activate']")).click();
         //enter an incorrect activation code
-        driver.findElement(By.xpath("//*[@class='UIATextField']")).sendKeys("119_429_1191008");
+        driver.findElement(By.xpath("//*[@class='UIATextField']")).sendKeys(ActivationCode);
         //Activate Asound and wait
         driver.findElement(By.xpath("//*[@text='Activate']")).click();
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
@@ -97,6 +105,7 @@ public class InformationUI {
     }
 
     @Test
+    @Order(2)
     public void Information_About() {
         //open the information page
         driver.findElement(By.xpath("//*[@id='Information']")).click();
@@ -249,10 +258,6 @@ public class InformationUI {
     public void Information_Copyright(){
         //open the information page
         driver.findElement(By.xpath("//*[@id='Information']")).click();
-        //swipe to Cache
-        scrollObject.put("direction", "down");
-        scrollObject.put("name", "Email us");
-        driver.executeScript("mobile:scroll", scrollObject);
         //test the text of the Email us box, make sure it is there.
         String Actual_Result = driver.findElement(By.xpath("//*[@id='©2023 Mobile Research Labs Ltd']")).getText();
         String Expected_Result = "©2023 Mobile Research Labs Ltd";
@@ -261,7 +266,9 @@ public class InformationUI {
         //print the actual result
         System.out.println(ANSI_BLACK + ANSI_GREEN_Background + Actual_Result);
     }
-    @After
-    public void tearDown() {
-        driver.quit();
+
+
+    @AfterClass
+    public static void tearDown() {
+            driver.removeApp("com.mrl.Asound.stag");
     }}

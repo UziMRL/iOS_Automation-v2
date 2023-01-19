@@ -25,9 +25,9 @@ import io.appium.java_client.TouchAction;
 
 
 public class InformationFunctionality {
-    private String reportDirectory = "reports";
-    private String reportFormat = "xml";
-    private String testName = "Untitled";
+    private final String reportDirectory = "reports";
+    private final String reportFormat = "xml";
+    private final String testName = "Untitled";
     public static final String ANSI_RESET = "\u001B[0m";
 
     public static final String ANSI_BLACK = "\u001B[30m";

@@ -19,9 +19,9 @@ import java.util.logging.Level;
 
 
 public class testperms {
-    private String reportDirectory = "reports";
-    private String reportFormat = "xml";
-    private String testName = "Untitled";
+    private final String reportDirectory = "reports";
+    private final String reportFormat = "xml";
+    private final String testName = "Untitled";
     public static final String ANSI_RESET = "\u001B[0m";
 
     public static final String ANSI_BLACK = "\u001B[30m";
@@ -34,7 +34,7 @@ public class testperms {
 
     public static final String ANSI_GREEN_Background = "\u001B[42m";
     // Main driver method
-    private String activationCode = "1001_401_1008";
+    private final String activationCode = "1001_401_1008";
     protected IOSDriver<IOSElement> driver = null;
     WebDriverWait wait;
 

@@ -18,11 +18,11 @@ import java.util.logging.Level;
 
 
 public class Untitiel {
-    private String reportDirectory = "reports";
-    private String reportFormat = "xml";
-    private String testName = "Untitled";
+    private final String reportDirectory = "reports";
+    private final String reportFormat = "xml";
+    private final String testName = "Untitled";
 
-    private String activationCode = "1001_401_1008";
+    private final String activationCode = "1001_401_1008";
     protected IOSDriver<IOSElement> driver = null;
     WebDriverWait wait;
 

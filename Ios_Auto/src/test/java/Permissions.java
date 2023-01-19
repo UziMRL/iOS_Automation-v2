@@ -3,45 +3,30 @@ import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.IOSElement;
 import io.appium.java_client.remote.MobileCapabilityType;
 import org.openqa.selenium.By;
-import org.openqa.selenium.NoSuchElementException;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.junit.*;
-import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.testng.annotations.*;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.URL;
-import java.net.MalformedURLException;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
-import static org.junit.Assert.assertEquals;
+import io.qameta.allure.*;
 
+import static org.example.Untitiel.ANSI_BLACK;
+import static org.example.Untitiel.ANSI_GREEN_Background;
 
+@Listeners({io.qameta.allure.testng.AllureTestNg.class})
+@Epic("Regression Tests")
+@Feature("Permissions")
 public class Permissions {
-    private String reportDirectory = "reports";
-    private String reportFormat = "xml";
-    private String testName = "Untitled";
-    public static final String ANSI_RESET = "\u001B[0m";
-
-    public static final String ANSI_BLACK = "\u001B[30m";
-
-    public static final String ANSI_GREEN = "\u001B[32m";
-
-    public static final String ANSI_WHITE = "\u001B[37m";
-
-    public static final String ANSI_RED_Background = "\u001B[41m";
-
-    public static final String ANSI_GREEN_Background = "\u001B[42m";
-    // Main driver method
     protected IOSDriver<IOSElement> driver = null;
     WebDriverWait wait;
-
     DesiredCapabilities dc = new DesiredCapabilities();
 
-    @Before
-    public void setUp() throws MalformedURLException {
+    @BeforeMethod
+    public void setUp() throws Exception {
         dc.setCapability("reportDirectory", "/Users/qa/Desktop/Reports");
         dc.setCapability("reportFormat", "pdf");
         dc.setCapability("testName", "Permissions test");
@@ -98,7 +83,7 @@ public class Permissions {
         System.out.println(ANSI_BLACK + ANSI_GREEN_Background + "Permissions have been given.");
 
     }
-    @After
+    @AfterClass
     public void tearDown() {
         driver.quit();
 

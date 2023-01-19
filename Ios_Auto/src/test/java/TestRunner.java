@@ -20,12 +20,12 @@ public class TestRunner {
     public static void main(String[] args) {
         // Run the tests
         Result result = JUnitCore.runClasses(
-                Activation.class
-//                Permissions.class,
-//                homePageMute.class,
-//                History.class,
-//                InformationUI.class,
-//                InformationFunctionality.class
+                Activation.class,
+               Permissions.class,
+               homePageMute.class,
+               History.class,
+               InformationUI.class,
+              InformationFunctionality.class
         );
 
         // Create the report document

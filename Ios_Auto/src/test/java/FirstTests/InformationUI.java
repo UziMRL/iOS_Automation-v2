@@ -1,28 +1,40 @@
+package FirstTests;
+
 import io.appium.java_client.remote.IOSMobileCapabilityType;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.IOSElement;
 import io.appium.java_client.remote.MobileCapabilityType;
+import io.qameta.allure.Allure;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import org.openqa.selenium.By;
 
 
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.junit.*;
+import org.testng.*;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.annotations.*;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.time.Duration;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import static org.junit.Assert.assertEquals;
 
-
+@Listeners({io.qameta.allure.testng.AllureTestNg.class})
+@Epic("Regression Tests")
+@Feature("Info UI")
 public class InformationUI {
-    private final String reportDirectory = "reports";
-    private final String reportFormat = "xml";
-    private final String testName = "Untitled";
+
     public static final String ANSI_RESET = "\u001B[0m";
 
     public static final String ANSI_BLACK = "\u001B[30m";
@@ -42,11 +54,8 @@ public class InformationUI {
 
     DesiredCapabilities dc = new DesiredCapabilities();
 
-    @Before
+    @BeforeClass
     public void setUp() throws MalformedURLException {
-        dc.setCapability("reportDirectory", "/Users/qa/Desktop/Reports");
-        dc.setCapability("reportFormat", "pdf");
-        dc.setCapability("testName", "Information UI");
         dc.setCapability(MobileCapabilityType.UDID, "auto");
         dc.setCapability("fullReset", true);
         dc.setCapability(MobileCapabilityType.APP, "/Users/qa/Desktop/AsoundStag (06).ipa");
@@ -93,7 +102,7 @@ public class InformationUI {
         //print it so we can see
         System.out.println(driver.findElement(By.xpath("//*[@text='Sound Level']")).getText());
         //now finally make sure we have passed the test by printing a nice passing message.
-        System.out.println(ANSI_BLACK + ANSI_GREEN_Background + "Permissions have been given.");
+        System.out.println(ANSI_BLACK + ANSI_GREEN_Background + "FirstTests.Permissions have been given.");
     }
 
     @Test
@@ -261,7 +270,18 @@ public class InformationUI {
         //print the actual result
         System.out.println(ANSI_BLACK + ANSI_GREEN_Background + Actual_Result);
     }
-    @After
+    @AfterMethod
+    public void screenShotError(ITestResult result) throws IOException {
+        if (result.getStatus() == ITestResult.FAILURE) {
+            byte[] decodedScreenshot = Base64.getDecoder().decode(driver.getScreenshotAs(OutputType.BASE64));
+            File screenshotFile = new File("screenshot.png");
+            FileOutputStream fos = new FileOutputStream(screenshotFile);
+            fos.write(decodedScreenshot);
+            fos.close();
+            Allure.addAttachment("Screenshot", new FileInputStream(screenshotFile));
+        }
+    }
+    @AfterClass
     public void tearDown() {
         driver.quit();
     }}

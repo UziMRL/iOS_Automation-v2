@@ -1,24 +1,37 @@
+package FirstTests;
+
 import io.appium.java_client.remote.IOSMobileCapabilityType;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.IOSElement;
 import io.appium.java_client.remote.MobileCapabilityType;
 import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.junit.*;
+import io.qameta.allure.Allure;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import org.testng.annotations.*;
+
+import org.testng.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.net.MalformedURLException;
+import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import static org.junit.Assert.assertEquals;
 
-
+@Listeners({io.qameta.allure.testng.AllureTestNg.class})
+@Epic("Regression Tests")
+@Feature("Text Test")
 public class TextTest{
-        private final String reportDirectory = "reports";
-        private final String reportFormat = "xml";
-        private final String testName = "Untitled";
         public static final String ANSI_RESET = "\u001B[0m";
 
         public static final String ANSI_BLACK = "\u001B[30m";
@@ -36,11 +49,8 @@ public class TextTest{
 
         DesiredCapabilities dc = new DesiredCapabilities();
 
-        @Before
+        @BeforeClass
         public void setUp() throws MalformedURLException {
-            dc.setCapability("reportDirectory", "/Users/qa/Desktop/Reports");
-            dc.setCapability("reportFormat", "pdf");
-            dc.setCapability("testName", "Text Tests");
             dc.setCapability(MobileCapabilityType.UDID, "auto");
             dc.setCapability("fullReset", true);
             dc.setCapability(MobileCapabilityType.APP, "/Users/qa/Desktop/AsoundStag (06).ipa");
@@ -156,9 +166,9 @@ public class TextTest{
         @Test
         public void activation_code_text_test() {
             //Test the text of activation code-Actual result
-            String Actual_Result=driver.findElement(By.xpath("//*[@id='Activation Code']")).getText();
+            String Actual_Result=driver.findElement(By.xpath("//*[@id='FirstTests.Activation Code']")).getText();
             //Test the text of activation code-Excepted result
-            String Excepted_Result = "Activation Code";
+            String Excepted_Result = "FirstTests.Activation Code";
             //AssertEquals
             assertEquals(Excepted_Result,Actual_Result);
             //Print the actual result
@@ -321,9 +331,20 @@ public class TextTest{
         assertEquals(Excepted_Result,Actual_Result);
         //Print the actual result
         System.out.println(ANSI_GREEN_Background+ANSI_BLACK+Actual_Result);
-
     }
-        @After
+    @AfterMethod
+    public void screenShotError(ITestResult result) throws IOException {
+        if (result.getStatus() == ITestResult.FAILURE) {
+            byte[] decodedScreenshot = Base64.getDecoder().decode(driver.getScreenshotAs(OutputType.BASE64));
+            File screenshotFile = new File("screenshot.png");
+            FileOutputStream fos = new FileOutputStream(screenshotFile);
+            fos.write(decodedScreenshot);
+            fos.close();
+            Allure.addAttachment("Screenshot", new FileInputStream(screenshotFile));
+        }
+    }
+
+    @AfterClass
         public void tearDown() {
             driver.quit();
 

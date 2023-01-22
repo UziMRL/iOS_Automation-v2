@@ -1,27 +1,35 @@
+package FirstTests;
+
 import io.appium.java_client.remote.IOSMobileCapabilityType;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.IOSElement;
 import io.appium.java_client.remote.MobileCapabilityType;
+import io.qameta.allure.*;
 import org.openqa.selenium.By;
 
 
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.junit.*;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.ITestResult;
+import org.testng.annotations.*;
 
+
+import java.io.*;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.time.Duration;
+import java.util.Arrays;
+import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import static org.junit.Assert.assertEquals;
 
-
+@Listeners({io.qameta.allure.testng.AllureTestNg.class})
+@Epic("Regression Tests")
+@Feature("FirstTests.History")
 public class History {
-    private final String reportDirectory = "reports";
-    private final String reportFormat = "xml";
-    private final String testName = "Untitled";
     public static final String ANSI_RESET = "\u001B[0m";
 
     public static final String ANSI_BLACK = "\u001B[30m";
@@ -39,17 +47,19 @@ public class History {
 
     DesiredCapabilities dc = new DesiredCapabilities();
 
-    @Before
+    @BeforeMethod
     public void setUp() throws MalformedURLException {
-        dc.setCapability("reportDirectory", "/Users/qa/Desktop/Reports");
-        dc.setCapability("reportFormat", "pdf");
-        dc.setCapability("testName", "History UI tests");
         dc.setCapability(MobileCapabilityType.UDID, "auto");
-        dc.setCapability("fullReset", true);
+        dc.setCapability("noReset", true);
         dc.setCapability(MobileCapabilityType.APP, "/Users/qa/Desktop/AsoundStag (06).ipa");
         dc.setCapability(IOSMobileCapabilityType.BUNDLE_ID, "com.mrl.Asound.stag");
         driver = new IOSDriver<>(new URL("http://localhost:4723/wd/hub"), dc);
         driver.setLogLevel(Level.INFO);
+
+
+    }
+    @Test
+    public void Activate(){
         driver.findElement(By.xpath("//*[@text='Yes, I would like to Activate']")).click();
         //enter an incorrect activation code
         driver.findElement(By.xpath("//*[@class='UIATextField']")).sendKeys("119_429_1191031");
@@ -90,16 +100,14 @@ public class History {
         //print it so we can see
         System.out.println(driver.findElement(By.xpath("//*[@text='Sound Level']")).getText());
         //now finally make sure we have passed the test by printing a nice passing message.
-        System.out.println(ANSI_BLACK + ANSI_GREEN_Background + "Permissions have been given.");
-
+        System.out.println(ANSI_BLACK + ANSI_GREEN_Background + "FirstTests.Permissions have been given.");
     }
-
     @Test
     public void History_Button() {
         //Test the text of the history button
-        String Actual_Result=driver.findElement(By.xpath("//*[@id='History']")).getText();
+        String Actual_Result=driver.findElement(By.xpath("//*[@id='FirstTests.History']")).getText();
         //Test the text of Quick question-Excepted result
-        String Excepted_Result = "History";
+        String Excepted_Result = "FirstTests.History";
         //AssertEquals
         assertEquals(Excepted_Result,Actual_Result);
         //Print the actual result
@@ -108,11 +116,11 @@ public class History {
     @Test
     public void Open_History_Page() {
         //open the history page.
-        driver.findElement(By.xpath("//*[@id='History']")).click();
+        driver.findElement(By.xpath("//*[@id='FirstTests.History']")).click();
         //verify you are in the history page.
-        String Actual_Result=driver.findElement(By.xpath("//*[@name='History']")).getText();
+        String Actual_Result=driver.findElement(By.xpath("//*[@name='FirstTests.History']")).getText();
         //Test the text of the title.
-        String Excepted_Result = "History";
+        String Excepted_Result = "FirstTests.History";
         //AssertEquals that the title is history
         assertEquals(Excepted_Result,Actual_Result);
         //Print the actual result
@@ -121,7 +129,7 @@ public class History {
     @Test
     public void History_Active_Days() {
         //open the history page.
-        driver.findElement(By.xpath("//*[@id='History']")).click();
+        driver.findElement(By.xpath("//*[@id='FirstTests.History']")).click();
         //in the history page make sure you see the Active Days in the circle
         String Actual_Result=driver.findElement(By.xpath("//*[@id='Active days']")).getText();
         //Test the Text
@@ -134,7 +142,7 @@ public class History {
     @Test
     public void History_Sunday() {
         //open the history page.
-        driver.findElement(By.xpath("//*[@id='History']")).click();
+        driver.findElement(By.xpath("//*[@id='FirstTests.History']")).click();
         //in the history page make sure you see the Monday in the calnedar
         String Actual_Result=driver.findElement(By.xpath("//*[@id='M']")).getText();
         //Test the text of Sunday
@@ -148,7 +156,7 @@ public class History {
     @Test
     public void History_Friday() {
         //open the history page.
-        driver.findElement(By.xpath("//*[@id='History']")).click();
+        driver.findElement(By.xpath("//*[@id='FirstTests.History']")).click();
         //in the history page make sure you see Friday
         String Actual_Result=driver.findElement(By.xpath("//*[@id='F']")).getText();
         //Test the text of the Day.
@@ -161,7 +169,7 @@ public class History {
     @Test
     public void History_First_Calendar_Day() {
         //open the history page.
-        driver.findElement(By.xpath("//*[@id='History']")).click();
+        driver.findElement(By.xpath("//*[@id='FirstTests.History']")).click();
         //in the history page make sure you see the First day in teh calendar
         String Actual_Result=driver.findElement(By.xpath("//*[@id='1']")).getText();
         //Test the text of the Day
@@ -174,7 +182,7 @@ public class History {
     @Test
     public void History_Twenty_Eighth() {
         //open the history page.
-        driver.findElement(By.xpath("//*[@id='History']")).click();
+        driver.findElement(By.xpath("//*[@id='FirstTests.History']")).click();
         //in the history page make sure you see the 28th day of the month
         String Actual_Result=driver.findElement(By.xpath("//*[@id='28']")).getText();
         //Test the text of the day.
@@ -188,7 +196,7 @@ public class History {
     @Test
     public void History_Statuses_Successfully() {
         //open the history page.
-        driver.findElement(By.xpath("//*[@id='History']")).click();
+        driver.findElement(By.xpath("//*[@id='FirstTests.History']")).click();
         //in the history page make sure you see the successful status
         String Actual_Result=driver.findElement(By.xpath("//*[@id='Successfully']")).getText();
         //Test the text of the status.
@@ -201,7 +209,7 @@ public class History {
     @Test
     public void History_Statuses_Almost() {
         //open the history page.
-        driver.findElement(By.xpath("//*[@id='History']")).click();
+        driver.findElement(By.xpath("//*[@id='FirstTests.History']")).click();
         //in the history page make sure you see the Almost status
         String Actual_Result=driver.findElement(By.xpath("//*[@id='Almost']")).getText();
         //Test the text of the status.
@@ -214,7 +222,7 @@ public class History {
     @Test
     public void History_Statuses_No_Activity() {
         //open the history page.
-        driver.findElement(By.xpath("//*[@id='History']")).click();
+        driver.findElement(By.xpath("//*[@id='FirstTests.History']")).click();
         //in the history page make sure you see the no activity status
         String Actual_Result=driver.findElement(By.xpath("//*[@id='No activity']")).getText();
         //Test the text of the status.
@@ -227,9 +235,9 @@ public class History {
     @Test
     public void History_Statuses_Panelist_ID() {
         //open the history page.
-        driver.findElement(By.xpath("//*[@id='History']")).click();
+        driver.findElement(By.xpath("//*[@id='FirstTests.History']")).click();
         //in the history page make sure you see the panelist id
-        String Actual_Result=driver.findElement(By.xpath("//*[@text='Panelist ID: 1191031']")).getText();
+        String Actual_Result=driver.findElement(By.xpath("//*[@text='Panelist ID: 1191001']")).getText();
         //Test the text of the panelist id.
         String Excepted_Result = "Panelist ID: 1191031";
         //AssertEquals that text reads out the panelist id
@@ -237,8 +245,22 @@ public class History {
         //Print the actual result
         System.out.println(ANSI_GREEN_Background+ANSI_BLACK+Actual_Result);
     }
+    @AfterMethod
+    public void screenShotError(ITestResult result) throws IOException {
+        if (result.getStatus() == ITestResult.FAILURE) {
+            byte[] decodedScreenshot = Base64.getDecoder().decode(driver.getScreenshotAs(OutputType.BASE64));
+            File screenshotFile = new File("screenshot.png");
+            FileOutputStream fos = new FileOutputStream(screenshotFile);
+            fos.write(decodedScreenshot);
+            fos.close();
+            Allure.addAttachment("Screenshot", new FileInputStream(screenshotFile));
+        }
+    }
 
-    @After
+
+
+
+    @AfterClass
     public void tearDown() {
         driver.quit();
 

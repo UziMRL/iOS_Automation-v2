@@ -1,28 +1,39 @@
+package FirstTests;
+
 import io.appium.java_client.remote.IOSMobileCapabilityType;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.IOSElement;
 import io.appium.java_client.remote.MobileCapabilityType;
+import io.qameta.allure.Allure;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
 import org.openqa.selenium.By;
 
 
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.junit.*;
+import org.testng.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.annotations.*;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.net.MalformedURLException;
+import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 import static org.junit.Assert.assertEquals;
 
-
+@Listeners({io.qameta.allure.testng.AllureTestNg.class})
+@Epic("Regression Tests")
+@Feature("FirstTests.Activation")
 public class Activation {
-    private final String reportDirectory = "reports";
-    private final String reportFormat = "xml";
-    private final String testName = "Untitled";
     public static final String ANSI_RESET = "\u001B[0m";
 
     public static final String ANSI_BLACK = "\u001B[30m";
@@ -40,11 +51,8 @@ public class Activation {
 
     DesiredCapabilities dc = new DesiredCapabilities();
 
-    @Before
+    @BeforeClass
     public void setUp() throws MalformedURLException {
-        dc.setCapability("reportDirectory", "/Users/qa/Desktop/Reports");
-        dc.setCapability("reportFormat", "pdf");
-        dc.setCapability("testName", "Activation tests");
         dc.setCapability(MobileCapabilityType.UDID, "auto");
         dc.setCapability("fullReset", true);
         dc.setCapability(MobileCapabilityType.APP, "/Users/qa/Desktop/AsoundStag (06).ipa");
@@ -63,9 +71,9 @@ public class Activation {
         driver.findElement(By.xpath("//*[@text='Activate']")).click();
         //verify you have made it by printing the following code
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        driver.findElement(By.xpath("//*[@id='Activation Code Error']")).isDisplayed();
-        String Excepted="Activation Code Error";
-        String Actual= driver.findElement(By.xpath( "//*[@id='Activation Code Error']")).getText();
+        driver.findElement(By.xpath("//*[@id='FirstTests.Activation Code Error']")).isDisplayed();
+        String Excepted="FirstTests.Activation Code Error";
+        String Actual= driver.findElement(By.xpath( "//*[@id='FirstTests.Activation Code Error']")).getText();
         assertEquals(Actual,Excepted);
 
         System.out.println(ANSI_GREEN_Background+ANSI_BLACK+Actual);
@@ -104,9 +112,19 @@ public class Activation {
         String Excepted="Congratulations!";
         assertEquals(Actual,Excepted);
         System.out.println(ANSI_GREEN_Background+ANSI_BLACK+Actual);
-
     }
-    @After
+    @AfterMethod
+    public void screenShotError(ITestResult result) throws IOException {
+        if (result.getStatus() == ITestResult.FAILURE) {
+            byte[] decodedScreenshot = Base64.getDecoder().decode(driver.getScreenshotAs(OutputType.BASE64));
+            File screenshotFile = new File("screenshot.png");
+            FileOutputStream fos = new FileOutputStream(screenshotFile);
+            fos.write(decodedScreenshot);
+            fos.close();
+            Allure.addAttachment("Screenshot", new FileInputStream(screenshotFile));
+        }
+    }
+    @AfterClass
     public void tearDown() {
         driver.quit();
 

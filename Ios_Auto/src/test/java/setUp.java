@@ -89,7 +89,7 @@ public class setUp {
         //print it so we can see
         System.out.println(driver.findElement(By.xpath("//*[@text='Sound Level']")).getText());
         //now finally make sure we have passed the test by printing a nice passing message.
-        System.out.println(ANSI_BLACK + ANSI_GREEN_Background + "Permissions have been given.");
+        System.out.println(ANSI_BLACK + ANSI_GREEN_Background + "FirstTests.Permissions have been given.");
     }
     @Test
     public void setUpTest() {

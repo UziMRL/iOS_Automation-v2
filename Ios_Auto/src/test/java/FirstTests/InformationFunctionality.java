@@ -1,4 +1,5 @@
-import io.appium.java_client.TouchAction;
+package FirstTests;
+
 import io.appium.java_client.remote.IOSMobileCapabilityType;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.IOSElement;
@@ -6,28 +7,34 @@ import io.appium.java_client.remote.MobileCapabilityType;
 import org.openqa.selenium.By;
 
 
-import org.openqa.selenium.Dimension;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.junit.*;
+import org.testng.*;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import io.qameta.allure.*;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.time.Duration;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-import java.time.Duration;
 import static org.junit.Assert.assertEquals;
-import io.appium.java_client.TouchAction;
+import org.testng.annotations.*;
 
 
-
+@Listeners({io.qameta.allure.testng.AllureTestNg.class})
+@Epic("Regression Tests")
+@Feature("Info Functionality")
 public class InformationFunctionality {
-    private final String reportDirectory = "reports";
-    private final String reportFormat = "xml";
-    private final String testName = "Untitled";
     public static final String ANSI_RESET = "\u001B[0m";
 
     public static final String ANSI_BLACK = "\u001B[30m";
@@ -47,20 +54,17 @@ public class InformationFunctionality {
 
     DesiredCapabilities dc = new DesiredCapabilities();
 
-    @Before
+    @BeforeClass
     public void setUp() throws MalformedURLException {
-        dc.setCapability("reportDirectory", "/Users/qa/Desktop/Reports");
-        dc.setCapability("reportFormat", "pdf");
-        dc.setCapability("testName", "Information Functionality tests");
         dc.setCapability(MobileCapabilityType.UDID, "auto");
         dc.setCapability("fullReset", true);
-        dc.setCapability(MobileCapabilityType.APP, "/Users/qa/Desktop/AsoundStag (06).ipa");
+        dc.setCapability(MobileCapabilityType.APP, "/Users/yaron/Downloads/AsoundStag (11).ipa");
         dc.setCapability(IOSMobileCapabilityType.BUNDLE_ID, "com.mrl.Asound.stag");
         driver = new IOSDriver<>(new URL("http://localhost:4723/wd/hub"), dc);
         driver.setLogLevel(Level.INFO);
         driver.findElement(By.xpath("//*[@text='Yes, I would like to Activate']")).click();
         //enter an incorrect activation code
-        driver.findElement(By.xpath("//*[@class='UIATextField']")).sendKeys("119_429_1191031");
+        driver.findElement(By.xpath("//*[@class='UIATextField']")).sendKeys("119_429_1191008");
         //Activate Asound and wait
         driver.findElement(By.xpath("//*[@text='Activate']")).click();
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
@@ -113,6 +117,7 @@ public class InformationFunctionality {
         //Print the actual result
         System.out.println(ANSI_GREEN_Background+ANSI_BLACK+Actual_Result);
     }
+
     @Test
     public void Information_Page_Refresh() {
         //open the Info page.
@@ -144,6 +149,7 @@ public class InformationFunctionality {
         //Print the actual result
         System.out.println(ANSI_GREEN_Background+ANSI_BLACK+Actual_Result);
     }
+
     @Test
     public void Information_PCM(){
         //open the Info page.
@@ -179,12 +185,13 @@ public class InformationFunctionality {
                 "adopted this privacy policy (as may be amended from time to time) (the ', '\"', 'Privacy Policy', '\"', ') to ensure you are fully informed and aware " +
                 "as to the scope and nature of the Data MRL collects, " +
                 "generate and/or otherwise received from or about you while you are using the App, and how is it being Processed and/or otherwise used by MRL.')]")).getText();
-       String Expected_Result = "We, at Mobile Research Labs Ltd. (\"MRL\"), are committed to respect our Customers, their users and our Users' right for privacy with regards to the use of their Personal Data. We have adopted this privacy policy (as may be amended from time to time) (the \"Privacy Policy\") to ensure you are fully informed and aware as to the scope and nature of the Data MRL collects, generate and/or otherwise received from or about you while you are using the App, and how is it being Processed and/or otherwise used by MRL.";
+        String Expected_Result = "We, at Mobile Research Labs Ltd. (\"MRL\"), are committed to respect our Customers, their users and our Users' right for privacy with regards to the use of their Personal Data. We have adopted this privacy policy (as may be amended from time to time) (the \"Privacy Policy\") to ensure you are fully informed and aware as to the scope and nature of the Data MRL collects, generate and/or otherwise received from or about you while you are using the App, and how is it being Processed and/or otherwise used by MRL.";
         //assert we actually see it. note: the paragraph must stay in one line to work.
         assertEquals(Expected_Result, Actual_Result);
         //print the result
         System.out.println(ANSI_BLACK + ANSI_GREEN_Background + Actual_Result);
     }
+
     @Test
     public void Information_Logs(){
         //open the Info page.
@@ -207,12 +214,19 @@ public class InformationFunctionality {
         driver.findElement(By.xpath("//*[@id='Mail.cancelSendButton']")).click();
         driver.findElement(By.xpath("//*[@id='Delete Draft']")).click();
     }
+    @AfterMethod
+    public void screenShotError(ITestResult result) throws IOException {
+        if (result.getStatus() == ITestResult.FAILURE) {
+            byte[] decodedScreenshot = Base64.getDecoder().decode(driver.getScreenshotAs(OutputType.BASE64));
+            File screenshotFile = new File("screenshot.png");
+            FileOutputStream fos = new FileOutputStream(screenshotFile);
+            fos.write(decodedScreenshot);
+            fos.close();
+            Allure.addAttachment("Screenshot", new FileInputStream(screenshotFile));
+        }
+    }
 
-
-
-
-
-    @After
+    @AfterClass
     public void tearDown() {
         driver.quit();
 

@@ -1,14 +1,23 @@
+package FirstTests;
+
 import io.appium.java_client.remote.IOSMobileCapabilityType;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.IOSElement;
 import io.appium.java_client.remote.MobileCapabilityType;
 import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.testng.ITestResult;
 import org.testng.annotations.*;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
+import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
@@ -19,7 +28,7 @@ import static org.example.Untitiel.ANSI_GREEN_Background;
 
 @Listeners({io.qameta.allure.testng.AllureTestNg.class})
 @Epic("Regression Tests")
-@Feature("Permissions")
+@Feature("FirstTests.Permissions")
 public class Permissions {
     protected IOSDriver<IOSElement> driver = null;
     WebDriverWait wait;
@@ -27,9 +36,6 @@ public class Permissions {
 
     @BeforeMethod
     public void setUp() throws Exception {
-        dc.setCapability("reportDirectory", "/Users/qa/Desktop/Reports");
-        dc.setCapability("reportFormat", "pdf");
-        dc.setCapability("testName", "Permissions test");
         dc.setCapability(MobileCapabilityType.UDID, "auto");
         dc.setCapability("fullReset", true);
         dc.setCapability(MobileCapabilityType.APP, "/Users/qa/Desktop/AsoundStag (06).ipa");
@@ -80,9 +86,20 @@ public class Permissions {
         //print it so we can see
         System.out.println(driver.findElement(By.xpath("//*[@text='Sound Level']")).getText());
         //now finally make sure we have passed the test by printing a nice passing message.
-        System.out.println(ANSI_BLACK + ANSI_GREEN_Background + "Permissions have been given.");
-
+        System.out.println(ANSI_BLACK + ANSI_GREEN_Background + "FirstTests.Permissions have been given.");
     }
+    @AfterMethod
+    public void screenShotError(ITestResult result) throws IOException {
+        if (result.getStatus() == ITestResult.FAILURE) {
+            byte[] decodedScreenshot = Base64.getDecoder().decode(driver.getScreenshotAs(OutputType.BASE64));
+            File screenshotFile = new File("screenshot.png");
+            FileOutputStream fos = new FileOutputStream(screenshotFile);
+            fos.write(decodedScreenshot);
+            fos.close();
+            Allure.addAttachment("Screenshot", new FileInputStream(screenshotFile));
+        }
+    }
+
     @AfterClass
     public void tearDown() {
         driver.quit();
